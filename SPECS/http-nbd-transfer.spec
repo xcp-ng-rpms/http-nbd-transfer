@@ -1,5 +1,5 @@
 Name:           http-nbd-transfer
-Version:        1.0.0
+Version:        1.1.0
 Release:        1%{?dist}
 Summary:        Set of tools to transfer NBD requests to a HTTP server
 License:        GPLv3
@@ -33,5 +33,11 @@ make
 %{_libdir}/nbdkit/plugins/nbdkit-multi-http-plugin.so
 
 %changelog
-* Tue May 3 2022 Ronan Abhamon <ronan.abhamon@vates.fr> - 1.0.0-1
+* Mon Jan 09 2023 Ronan Abhamon <ronan.abhamon@vates.fr> - 1.1.0-1
+- HTTP server can reuse binding address now
+- Notify when HTTP server is ready
+- Better error handling and command logs
+- SIGTERM can be safely sent to NBD server
+
+* Tue May 03 2022 Ronan Abhamon <ronan.abhamon@vates.fr> - 1.0.0-1
 - Initial package
