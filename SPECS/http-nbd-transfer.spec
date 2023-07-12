@@ -1,5 +1,5 @@
 Name:           http-nbd-transfer
-Version:        1.2.0
+Version:        1.3.0
 Release:        1%{?dist}
 Summary:        Set of tools to transfer NBD requests to a HTTP server
 License:        GPLv3
@@ -33,6 +33,10 @@ make
 %{_libdir}/nbdkit/plugins/nbdkit-multi-http-plugin.so
 
 %changelog
+* Fri Jul 12 2023 Ronan Abhamon <ronan.abhamon@vates.fr> - 1.3.0-1
+- Handle invalid buffer usage in nbdkit plugin
+- Compatible with both versions of Python: 2 and 3
+
 * Fri Feb 17 2023 Ronan Abhamon <ronan.abhamon@vates.fr> - 1.2.0-1
 - Remove open/close calls to read/write disk
 
