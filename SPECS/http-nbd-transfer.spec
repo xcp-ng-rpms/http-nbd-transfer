@@ -1,5 +1,5 @@
 Name:           http-nbd-transfer
-Version:        1.3.0
+Version:        1.4.0
 Release:        1%{?dist}
 Summary:        Set of tools to transfer NBD requests to a HTTP server
 License:        GPLv3
@@ -10,10 +10,13 @@ BuildRequires: gcc
 BuildRequires: libcurl-devel
 BuildRequires: make
 BuildRequires: nbdkit-devel
+BuildRequires: python3-devel
+BuildRequires: python3-setuptools
 
 Requires: libcurl
 Requires: nbd
 Requires: nbdkit
+Requires: python3
 
 %description
 Set of tools to transfer NBD requests to a HTTP server.
@@ -23,17 +26,21 @@ Set of tools to transfer NBD requests to a HTTP server.
 
 %build
 make
+PYTHON=%{__python3} %{__python3} ./setup.py build
 
 %install
-%make_install PREFIX=%{_prefix} DESTDIR=$RPM_BUILD_ROOT
+%make_install PREFIX=%{_prefix} DESTDIR=%{buildroot}
+PYTHON=%{__python3} %{__python3} ./setup.py install --single-version-externally-managed -O1 --root=%{buildroot} --record=INSTALLED_FILES
 
-%files
-%{_bindir}/http-disk-server
-%{_bindir}/nbd-http-server
+%files -f INSTALLED_FILES
 %{_libdir}/nbdkit/plugins/nbdkit-multi-http-plugin.so
 
 %changelog
-* Fri Jul 12 2023 Ronan Abhamon <ronan.abhamon@vates.fr> - 1.3.0-1
+* Wed Jul 31 2024 Ronan Abhamon <ronan.abhamon@vates.tech> - 1.4.0-1
+- Try to open device and start HTTP server before notifying the user
+- Install pyc and pyo files
+
+* Wed Jul 12 2023 Ronan Abhamon <ronan.abhamon@vates.fr> - 1.3.0-1
 - Handle invalid buffer usage in nbdkit plugin
 - Compatible with both versions of Python: 2 and 3
 
