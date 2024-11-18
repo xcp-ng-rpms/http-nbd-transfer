@@ -1,5 +1,5 @@
 Name:           http-nbd-transfer
-Version:        1.4.0
+Version:        1.5.0
 Release:        1%{?dist}
 Summary:        Set of tools to transfer NBD requests to a HTTP server
 License:        GPLv3
@@ -36,6 +36,14 @@ PYTHON=%{__python3} %{__python3} ./setup.py install --single-version-externally-
 %{_libdir}/nbdkit/plugins/nbdkit-multi-http-plugin.so
 
 %changelog
+* Tue Nov 19 2024 Ronan Abhamon <ronan.abhamon@vates.tech> - 1.5.0-1
+- Prevent stacktrace during SIGTERM signal and open_device call
+- Robustify nbdkit startup: always wait for sockpath to be created
+- Handle broken pipe errors for python 3
+- Fix nbdkit plugin location for python 3
+- Don't force stdout/stderr flush
+- Fix libs import using underscores instead of dashes
+
 * Wed Jul 31 2024 Ronan Abhamon <ronan.abhamon@vates.tech> - 1.4.0-1
 - Try to open device and start HTTP server before notifying the user
 - Install pyc and pyo files
