@@ -1,5 +1,5 @@
 Name:           http-nbd-transfer
-Version:        1.6.0
+Version:        1.7.0
 Release:        1%{?dist}
 Summary:        Set of tools to transfer NBD requests to a HTTP server
 License:        GPLv3
@@ -36,6 +36,10 @@ PYTHON=%{__python3} %{__python3} ./setup.py install --single-version-externally-
 %{_libdir}/nbdkit/plugins/nbdkit-multi-http-plugin.so
 
 %changelog
+* Thu Jul 10 2025 Mathieu Labourier <mathieu.labourier@vates.tech> - 1.7.0-1
+- Fix missing import exceptions in log files.
+- Fix a potential HA startup failure with LINSTOR.
+
 * Tue Jun 17 2025 Mathieu Labourier <mathieu.labourier@vates.tech> - 1.6.0-1
 - Reduce logs by adding a debug log feature
 
