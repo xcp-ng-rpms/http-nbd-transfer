@@ -1,6 +1,6 @@
 Name:           http-nbd-transfer
 Version:        1.7.0
-Release:        1%{?dist}
+Release:        2%{?dist}
 Summary:        Set of tools to transfer NBD requests to a HTTP server
 License:        GPLv3
 URL:            https://github.com/xcp-ng/http-nbd-transfer
@@ -21,6 +21,18 @@ Requires: python3
 %description
 Set of tools to transfer NBD requests to a HTTP server.
 
+%package tests
+Summary:        Test suite for http-nbd-transfer
+Requires:       %{name} = %{version}-%{release}
+Requires:       pytest
+Requires:       lsof
+
+%description tests
+Test suite for http-nbd-transfer tools, it requires root privileges and uses nbd kernel module.
+
+Usage:
+py.test /usr/*/http-nbd-transfer/tests
+
 %prep
 %autosetup -p1
 
@@ -28,14 +40,41 @@ Set of tools to transfer NBD requests to a HTTP server.
 make
 PYTHON=%{__python3} %{__python3} ./setup.py build
 
+%check
+# Skip tests as root is required, so tests are packaged for integration purpose
+# py.test tests
+
 %install
 %make_install PREFIX=%{_prefix} DESTDIR=%{buildroot}
 PYTHON=%{__python3} %{__python3} ./setup.py install --single-version-externally-managed -O1 --root=%{buildroot} --record=INSTALLED_FILES
 
+# Package upstream's testsuite for integration tests
+install -d -m 0755 %{buildroot}%{_libdir}/%{name}/tests
+install -m 0644 tests/*.py %{buildroot}%{_libdir}/%{name}/tests/
+
+# Adapt tests's paths to use system's files
+# and write to temp dir to prevent filesystem pollution
+sed -i \
+    -e "s|WORKING_DIR + 'bin/|'%{_bindir}/|" \
+    -e "s|'/{}/{}.socket'.format(WORKING_DIR, volume_name)|'/tmp/%{name}-{}.socket'.format(volume_name)|" \
+    -e "s|backing_path = WORKING_DIR + 'image-'|backing_path = '/tmp/%{name}-image-'|" \
+    %{buildroot}%{_libdir}/%{name}/tests/conftest.py
+
 %files -f INSTALLED_FILES
 %{_libdir}/nbdkit/plugins/nbdkit-multi-http-plugin.so
 
+%files tests
+%{_libdir}/%{name}/tests/__init__.py
+%{_libdir}/%{name}/tests/conftest.py
+%{_libdir}/%{name}/tests/test_mirroring.py
+%{_libdir}/%{name}/tests/test_requests.py
+%exclude %{_libdir}/%{name}/tests/*.pyc
+%exclude %{_libdir}/%{name}/tests/*.pyo
+
 %changelog
+* Thu Oct 8 2026 Philippe Coval <philippe.coval@vates.tech> - 1.7.0-2
+- Add tests subpackage that adapt upstream's test suite.
+
 * Thu Jul 10 2025 Mathieu Labourier <mathieu.labourier@vates.tech> - 1.7.0-1
 - Fix missing import exceptions in log files.
 - Fix a potential HA startup failure with LINSTOR.
