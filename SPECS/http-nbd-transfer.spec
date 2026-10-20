@@ -1,6 +1,6 @@
 Name:           http-nbd-transfer
 Version:        1.8.0
-Release:        1%{?dist}
+Release:        1~XCPNG3564.2%{?dist}
 Summary:        Set of tools to transfer NBD requests to a HTTP server
 License:        GPLv3
 URL:            https://github.com/xcp-ng/http-nbd-transfer
